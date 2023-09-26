@@ -1,0 +1,68 @@
+@font-face {
+  font-family: "Neue Bit";
+  font-weight: normal;
+  src: url(../assets/font/NeueBit-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Neue Bit";
+  font-weight: bold;
+  src: url(../assets/font/NeueBit-Bold.otf);
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url(../assets/font/Fraunces.ttf);
+}
+
+@font-face {
+  font-family: "Press Start";
+  src: url(../assets/font/PressStart2P-Regular.ttf);
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html.dark {
+  background: #121212;
+}
+
+.bg-logo {
+  background-image: url(../assets/img/logo.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.close-btn {
+  background-image: url(../assets/img/close.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.icon-wallet {
+  background-image: url(../assets/img/icon_wallet.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.icon-email {
+  background-image: url(../assets/img/icon_email.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.icon-arrow {
+  background-image: url(../assets/img/icon_arrow.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
