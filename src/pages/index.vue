@@ -1,15 +1,46 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import Button from '../components/button.vue'
+import { api } from '../api'
+import { useAlert } from '~/stores/alerts'
+import { useEth } from '~/stores/eth'
+import { isSuccess } from '~/restful'
+import { useUser } from '~/stores/user'
+
+const eth = useEth()
+const alert = useAlert()
+const user = useUser()
+const newUser = ref(false)
+
+async function loginByMetamask() {
+  try {
+    await eth.connectWallet()
+    const msg = await api.sessions.getMessage()
+    if (!isSuccess(msg))
+      throw new Error('Unknown error, please try again.')
+
+    const signedMsg = await eth.signMessage(msg.data)
+    const errCode = await user.login(msg.data, signedMsg, eth.userAddr)
+    if (errCode === 40401) {
+      await user.create(msg.data, signedMsg, eth.userAddr)
+      newUser.value = true
+    }
+  }
+  catch (e) {
+    console.error((e as Error).message)
+    alert.show((e as Error).message, 'Error')
+  }
+}
 </script>
 
 <template>
   <div class="index-bg h-full w-full flex justify-center">
     <div class="h-full max-w-1200px w-full flex flex-col items-center justify-center">
       <div class="bg-logo h-22 w-22" />
-      <div class="font-press-start mt-4 text-4 font-normal text-white/50">
+      <div class="mt-4 text-4 font-normal font-press-start text-white/50">
         Mercurius Club
       </div>
-      <div class="font-fraunces mt-40px text-14 font-700 text-white">
+      <div class="mt-40px text-14 font-700 font-fraunces text-white">
         Chatting Brings You Luck
       </div>
       <Button class="mt-36 w-135 text-7">
@@ -17,7 +48,7 @@ import Button from '../components/button.vue'
           <div class="h-full w-9 pb-1.5">
             <img srcset="../assets/img/icon_wallet_1x.png 1x, ../assets/img/icon_wallet_2x.png 2x">
           </div>
-          <div class="ml-3 flex-1">
+          <div class="ml-3 flex-1" @click="loginByMetamask">
             Connect Wallet
           </div>
           <img srcset="../assets/img/icon_arrow_1x.png 1x, ../assets/img/icon_arrow_2x.png 2x">
@@ -34,7 +65,7 @@ import Button from '../components/button.vue'
           <img srcset="../assets/img/icon_arrow_1x.png 1x, ../assets/img/icon_arrow_2x.png 2x">
         </div>
       </Button>
-      <div class="font-neue-bit mt-6 w-490px text-6 leading-6 text-white/50">
+      <div class="mt-6 w-490px text-6 font-bold leading-6 font-neue-bit text-white/50">
         By signing in, you agree to Mercurius Labs Studio's <span class="text-white">Terms of Use</span> and <span class="text-white">Privacy Policy</span>
       </div>
     </div>

@@ -39,4 +39,13 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
   },
+
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000/api',
+        rewrite: path => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })
