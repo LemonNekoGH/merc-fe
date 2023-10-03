@@ -1,8 +1,10 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   title: string
+  hideCloseBtn: boolean
 }>(), {
   title: '',
+  hideCloseBtn: false,
 })
 
 const emit = defineEmits<{
@@ -18,7 +20,7 @@ const emit = defineEmits<{
         <div class="h-full flex flex-1 items-start justify-center text-9 font-bold font-neue-bit text-black">
           {{ title }}
         </div>
-        <div class="close-btn h-6 w-6 cursor-pointer" @click="emit('close')" />
+        <div v-if="!hideCloseBtn" class="close-btn h-6 w-6 cursor-pointer" @click="emit('close')" />
       </div>
       <!-- body -->
       <div class="bg-black p-5">

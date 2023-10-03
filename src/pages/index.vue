@@ -2,13 +2,13 @@
 import { ref } from 'vue'
 import Button from '../components/button.vue'
 import { api } from '../api'
-import { useAlert } from '~/stores/alerts'
 import { useEth } from '~/stores/eth'
 import { isSuccess } from '~/restful'
 import { useUser } from '~/stores/user'
+import { useGlobalDialog } from '~/stores/global-dialogs'
 
 const eth = useEth()
-const alert = useAlert()
+const globalDialogs = useGlobalDialog()
 const user = useUser()
 const newUser = ref(false)
 
@@ -20,15 +20,17 @@ async function loginByMetamask() {
       throw new Error('Unknown error, please try again.')
 
     const signedMsg = await eth.signMessage(msg.data)
+    // try login
     const errCode = await user.login(msg.data, signedMsg, eth.userAddr)
     if (errCode === 40401) {
+      // try register
       await user.create(msg.data, signedMsg, eth.userAddr)
       newUser.value = true
     }
   }
   catch (e) {
     console.error((e as Error).message)
-    alert.show((e as Error).message, 'Error')
+    globalDialogs.showAlert((e as Error).message, 'Error')
   }
 }
 </script>
@@ -86,3 +88,4 @@ async function loginByMetamask() {
   }
 }
 </style>
+~/stores/dialogs

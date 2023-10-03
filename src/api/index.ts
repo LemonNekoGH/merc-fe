@@ -9,7 +9,7 @@ export const api = {
       return client.post<User>('/users', { user: { message, sign_hex: signHex, address } })
     },
     async update(param: Partial<User>) {
-      return client.patch<User>('/users', param)
+      return client.patch<User>(`/users/${param.id}`, param)
     },
     async getMessage() {
       return client.get<string>('/users/message_for_signup')

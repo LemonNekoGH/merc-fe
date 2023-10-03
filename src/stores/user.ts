@@ -5,11 +5,7 @@ import type { User } from '~/api/types'
 import { isSuccess } from '~/restful'
 
 export const useUser = defineStore('user', () => {
-  const user = ref<User>({
-    id: '',
-    address: '',
-    nickname: '',
-  })
+  const user = ref<User | null>(null)
 
   const getSession = async () => {
     const resp = await api.sessions.get()
@@ -29,8 +25,10 @@ export const useUser = defineStore('user', () => {
 
   const create = async (message: string, sigHex: string, address: string) => {
     const resp = await api.users.create(message, sigHex, address)
-    if (isSuccess(resp))
+    if (isSuccess(resp)) {
       user.value = resp.data
+      return
+    }
 
     if (resp.code === 40901)
       throw new Error('User already exists')
@@ -38,10 +36,15 @@ export const useUser = defineStore('user', () => {
     throw new Error('Unknown error')
   }
 
-  const update = async (user: Partial<User>) => {
-    const resp = await api.users.update(user)
-    if (isSuccess(resp))
-      user = resp.data
+  const update = async (userParam: Partial<User>) => {
+    const resp = await api.users.update({
+      id: user.value?.id,
+      ...userParam,
+    })
+    if (isSuccess(resp)) {
+      user.value = resp.data
+      return
+    }
 
     if (resp.code === 40901)
       throw new Error('Nickname already exists')
@@ -51,11 +54,7 @@ export const useUser = defineStore('user', () => {
 
   const logout = async () => {
     await api.sessions.delete()
-    user.value = {
-      id: '',
-      address: '',
-      nickname: '',
-    }
+    user.value = null
   }
 
   return {

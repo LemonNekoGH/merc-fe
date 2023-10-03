@@ -1,24 +1,39 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Dialog from './components/dialog.vue'
+import RegisterDialog from './components/register-dialog.vue'
+import LoadingDialog from './components/loading-dialog.vue'
 
-import { useAlert } from './stores/alerts'
+import { useGlobalDialog } from './stores/global-dialogs'
 import { useUser } from './stores/user'
 
-const alert = useAlert()
+const router = useRouter()
+
+const globalDialogs = useGlobalDialog()
 const user = useUser()
 
 onMounted(async () => {
   // try get session
-  user.getSession()
+  await user.getSession()
+  if (!user.user) {
+    router.push('/')
+    return
+  }
+  if (!user.user.gender || !user.user.nickname || !user.user.avatar) {
+    router.push('/')
+    globalDialogs.showRegisterDialog = true
+  }
 })
 </script>
 
 <template>
   <RouterView />
-  <Dialog v-if="alert.alertParams.show" :title="alert.alertParams.title" @close="alert.close">
+  <RegisterDialog v-if="globalDialogs.showRegisterDialog" />
+  <Dialog v-if="globalDialogs.alertParams.show" :title="globalDialogs.alertParams.title" @close="globalDialogs.closeAlert">
     <div class="text-9 font-bold font-neue-bit text-white">
-      {{ alert.alertParams.message }}
+      {{ globalDialogs.alertParams.message }}
     </div>
   </Dialog>
+  <LoadingDialog v-if="globalDialogs.showingLoadingDialog" />
 </template>
