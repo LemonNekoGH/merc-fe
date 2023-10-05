@@ -2,9 +2,11 @@
 withDefaults(defineProps<{
   title: string
   hideCloseBtn: boolean
+  noMask: boolean
 }>(), {
   title: '',
   hideCloseBtn: false,
+  noMask: false,
 })
 
 const emit = defineEmits<{
@@ -13,7 +15,11 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="absolute left-0 top-0 h-full w-full flex items-center justify-center bg-black/20">
+  <div
+    class="absolute left-0 top-0 h-full w-full flex items-center justify-center" :class="{
+      'bg-black/20': !noMask,
+    }"
+  >
     <div class="border-0.5rem border-b-#808080 border-l-#e6e6e6 border-r-#808080 border-t-#e6e6e6 bg-#ccc p-5 pt-0px">
       <!-- head -->
       <div class="h-13 flex items-end justify-end pb-12px">

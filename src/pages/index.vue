@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Button from '../components/button.vue'
 import { api } from '../api'
 import { useEth } from '~/stores/eth'
@@ -10,7 +9,6 @@ import { useGlobalDialog } from '~/stores/global-dialogs'
 const eth = useEth()
 const globalDialogs = useGlobalDialog()
 const user = useUser()
-const newUser = ref(false)
 
 async function loginByMetamask() {
   try {
@@ -25,7 +23,7 @@ async function loginByMetamask() {
     if (errCode === 40401) {
       // try register
       await user.create(msg.data, signedMsg, eth.userAddr)
-      newUser.value = true
+      globalDialogs.showRegisterDialog = true
     }
   }
   catch (e) {
@@ -88,4 +86,3 @@ async function loginByMetamask() {
   }
 }
 </style>
-~/stores/dialogs

@@ -47,7 +47,7 @@ export const useUser = defineStore('user', () => {
     }
 
     if (resp.code === 40901)
-      throw new Error('Nickname already exists')
+      throw new Error('Your name has been taken, please try another one.')
 
     throw new Error('Unknown error')
   }
