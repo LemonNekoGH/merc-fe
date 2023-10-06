@@ -23,7 +23,7 @@ export const api = {
       return client.post<User>('/sessions', { user: { message, sign_hex: signHex, address } })
     },
     async delete() {
-      return client.post<null>('/sessions')
+      return client.delete<null>('/sessions')
     },
     async getMessage() {
       return client.get<string>('/sessions/message_for_login')
