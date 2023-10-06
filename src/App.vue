@@ -29,7 +29,7 @@ onMounted(async () => {
 
 <template>
   <RouterView />
-  <RegisterDialog v-if="globalDialogs.showRegisterDialog" />
+  <RegisterDialog v-if="globalDialogs.showRegisterDialog" @close="globalDialogs.showRegisterDialog = false" />
   <Dialog v-if="globalDialogs.alertParams.show" :title="globalDialogs.alertParams.title" @close="globalDialogs.closeAlert">
     <div class="text-9 font-bold font-neue-bit text-white">
       {{ globalDialogs.alertParams.message }}
