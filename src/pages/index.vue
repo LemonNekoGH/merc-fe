@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import Button from '../components/button.vue'
 import { api } from '../api'
 import { useEth } from '~/stores/eth'
@@ -9,6 +10,7 @@ import { useGlobalDialog } from '~/stores/global-dialogs'
 const eth = useEth()
 const globalDialogs = useGlobalDialog()
 const user = useUser()
+const router = useRouter()
 
 async function loginByMetamask() {
   try {
@@ -34,9 +36,9 @@ async function loginByMetamask() {
 </script>
 
 <template>
-  <div class="index-bg h-full w-full flex flex-col">
-    <!-- header -->
-    <div v-if="user.user" class="max-w-1200px w-full flex justify-end p-5">
+  <!-- header -->
+  <div v-if="user.user" class="absolute left-0 top-0 w-full flex justify-center">
+    <div class="max-w-1200px w-full flex justify-end p-5">
       <div class="flex items-center b-2px b-[rgba(255,255,255,0.25)] px-4 py-2">
         <img srcset="../assets/img/icon_wallet_2_1x.png 1x, ../assets/img/icon_wallet_2_2x.png 2x" height="24">
         <div class="ml-4 flex items-center pt-2 text-5 font-bold font-neue-bit text-white">
@@ -52,6 +54,8 @@ async function loginByMetamask() {
         </div>
       </Button>
     </div>
+  </div>
+  <div class="index-bg h-full w-full flex flex-col items-center">
     <div class="h-full max-w-1200px w-full flex flex-col items-center justify-center">
       <!-- main -->
       <div class="bg-logo h-22 w-22" />
@@ -88,7 +92,7 @@ async function loginByMetamask() {
           By signing in, you agree to Mercurius Labs Studio's <span class="text-white">Terms of Use</span> and <span class="text-white">Privacy Policy</span>
         </div>
       </template>
-      <Button v-else class="mt-35 w-92.5 text-9 leading-8">
+      <Button v-else class="mt-35 w-92.5 text-9 leading-8" @click="router.push('/match')">
         <div class="flex items-center justify-center p-2">
           <img class="h-8 w-8 object-contain" src="../assets/img/icon_heart_message.svg">
           <div class="ml-3">
