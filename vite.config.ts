@@ -46,6 +46,11 @@ export default defineConfig({
         target: 'http://localhost:3000/api',
         rewrite: path => path.replace(/^\/api/, ''),
       },
+      '/cable': {
+        ws: true,
+        target: 'http://localhost:3000/cable',
+        rewrite: path => path.replace(/^\/cable/, ''),
+      },
     },
   },
 })

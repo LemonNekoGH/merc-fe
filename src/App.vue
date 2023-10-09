@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import Dialog from './components/dialog.vue'
 import RegisterDialog from './components/register-dialog.vue'
 import LoadingDialog from './components/loading-dialog.vue'
+import ChatRequestDialog from './components/chat-request-dialog.vue'
 
 import { useGlobalDialog } from './stores/global-dialogs'
 import { useUser } from './stores/user'
@@ -29,8 +30,18 @@ onMounted(async () => {
 
 <template>
   <RouterView />
-  <RegisterDialog v-if="globalDialogs.showRegisterDialog" @close="globalDialogs.showRegisterDialog = false" />
-  <Dialog v-if="globalDialogs.alertParams.show" :title="globalDialogs.alertParams.title" @close="globalDialogs.closeAlert">
+  <RegisterDialog
+    v-if="globalDialogs.showRegisterDialog"
+    @close="globalDialogs.showRegisterDialog = false"
+  />
+  <ChatRequestDialog
+    v-if="globalDialogs.chatRequestDialogProps"
+    :info="globalDialogs.chatRequestDialogProps"
+  />
+  <Dialog
+    v-if="globalDialogs.alertParams.show"
+    :title="globalDialogs.alertParams.title" @close="globalDialogs.closeAlert"
+  >
     <div class="text-9 font-bold font-neue-bit text-white">
       {{ globalDialogs.alertParams.message }}
     </div>
