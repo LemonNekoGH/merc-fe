@@ -30,7 +30,7 @@ interface AcceptChatMessage {
 // reject in hall
 interface RejectChatMessage {
   type: 'reject'
-  reason: 'pending' | 'other_side_chatting' | 'user_reject' | 'expired' | 'you_are_chatting'
+  reason: 'pending' | 'other_side_chatting' | 'user_reject' | 'expired' | 'you_are_chatting' | 'canceled'
 }
 
 export type AcceptOrRejectChatMessage = AcceptChatMessage | RejectChatMessage

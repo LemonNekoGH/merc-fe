@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import Dialog from './components/dialog.vue'
 import RegisterDialog from './components/register-dialog.vue'
 import LoadingDialog from './components/loading-dialog.vue'
-import ChatRequestDialog from './components/chat-request-dialog.vue'
 
 import { useGlobalDialog } from './stores/global-dialogs'
 import { useUser } from './stores/user'
@@ -21,6 +20,7 @@ onMounted(async () => {
     router.push('/')
     return
   }
+  // complete register
   if (!user.user.gender || !user.user.nickname || !user.user.avatar) {
     router.push('/')
     globalDialogs.showRegisterDialog = true
@@ -33,10 +33,6 @@ onMounted(async () => {
   <RegisterDialog
     v-if="globalDialogs.showRegisterDialog"
     @close="globalDialogs.showRegisterDialog = false"
-  />
-  <ChatRequestDialog
-    v-if="globalDialogs.chatRequestDialogProps"
-    :info="globalDialogs.chatRequestDialogProps"
   />
   <Dialog
     v-if="globalDialogs.alertParams.show"

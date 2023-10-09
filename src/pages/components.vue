@@ -38,7 +38,7 @@ const requestDialog3: ChatRequestDialogProps = {
   name: 'Example Name',
   type: 'outcome',
   message: 'This is an outcome request dialog, but rejected',
-  error: 'She/he rejected your request',
+  error: 'Example Name rejected your request',
   sent: true,
   example: true,
 }

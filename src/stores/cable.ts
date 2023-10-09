@@ -10,7 +10,7 @@ export const useCable = defineStore('cable', () => {
   let notification: (Subscription<Consumer> & Mixin & {
     received: (data: Received.AcceptOrRejectChatMessage) => void
   }) | null = null
-  const createNotificationChannel = (address: string, onReceived: (_: Received.AcceptOrRejectChatMessage) => void) => {
+  const createNotificationChannel = (address: string, onReceived: (msg: Received.AcceptOrRejectChatMessage) => void) => {
     notification = consumer.subscriptions.create({
       channel: 'NotificationChannel',
       address,
@@ -25,18 +25,18 @@ export const useCable = defineStore('cable', () => {
     notification!.send({ type: 'reject', request } as Send.RejectChatMessage)
   }
 
-  let hallMessageReceiver = (_: Common.HallMessage | Common.HallMessage[]) => {}
-  const hall = consumer.subscriptions.create({
-    channel: 'ChatHallChannel',
-    room: 'hall',
-  }, {
-    received: hallMessageReceiver,
-  })
-  const setHallMessageReceiver = (receiver: (data: Common.HallMessage | Common.HallMessage[]) => void) => {
-    hallMessageReceiver = receiver
+  let hall: (Subscription<Consumer> & Mixin & {
+    received: (data: Common.HallMessage | Common.HallMessage[]) => void
+  }) | null = null
+  const createHallChannel = (receiver: (data: Common.HallMessage | Common.HallMessage[]) => void) => {
+    hall = consumer.subscriptions.create({
+      channel: 'HallChannel',
+    }, {
+      received: receiver,
+    })
   }
   const sendToHall = (msg: string, user: User) => {
-    hall.send({ message: msg, from: user } as Common.HallMessage)
+    hall!.send({ message: msg, from: user } as Common.HallMessage)
   }
   const requestChatFromHall = (from: User, to: User) => {
     notification!.send({ type: 'request', from, to, timestamp: Date.now() } as Send.RequestChatMessage)
@@ -63,7 +63,7 @@ export const useCable = defineStore('cable', () => {
     acceptChatRequest,
     rejectChatRequest,
     sendToHall,
-    setHallMessageReceiver,
+    createHallChannel,
     requestChatFromHall,
     enterChat,
     sendToChat,

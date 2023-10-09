@@ -7,6 +7,13 @@ export interface RequestChatMessage {
   to: User
 }
 
+// cancel request
+export interface CancelRequestMessage {
+  type: 'cancel'
+  from: string // address
+  to: string // address
+}
+
 // accept chat
 export interface AcceptChatMessage {
   type: 'accept'
