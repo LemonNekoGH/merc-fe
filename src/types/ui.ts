@@ -1,6 +1,8 @@
+import type { User } from '~/api/types'
+
 export interface ChatRequestDialogProps {
-  avatar: string
-  name: string
+  from: User
+  to: User
   type: 'incoming' | 'outcome'
   message: string
   error: string

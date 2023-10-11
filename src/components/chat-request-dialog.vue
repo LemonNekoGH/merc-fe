@@ -4,6 +4,8 @@ import type { ChatRequestDialogProps } from '../types/ui'
 import Button from './button.vue'
 import Dialog from './dialog.vue'
 import ChatAvatar from './chat-avatar.vue'
+import { useCable } from '~/stores/cable'
+import { useUser } from '~/stores/user'
 
 const props = defineProps<{
   info: ChatRequestDialogProps
@@ -13,7 +15,16 @@ const emit = defineEmits<{
   (e: 'accept' | 'request' | 'reject' | 'close'): void
 }>()
 
+const cable = useCable()
 const expired = ref(false)
+const user = useUser()
+
+function onChatButtonClick() {
+  if (!user.user)
+    return
+  cable.requestChatFromHall(user.user.address, props.info.to.address)
+}
+
 onMounted(() => {
   // only outcome request will start countdown
   if (props.info.type === 'outcome' && !props.info.sent)
@@ -22,9 +33,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <Dialog :hide-close-btn="!info.example" @close="emit('close')">
+  <Dialog :hide-close-btn="!info.example && info.type !== 'outcome' && !info.sent" @close="emit('close')">
     <div class="h-110 w-203 flex pl-4">
-      <ChatAvatar :avatar="info.avatar" :name="info.name" class="mt-17.25 flex-shrink-0" />
+      <ChatAvatar :avatar="info.to.avatar" :name="info.to.nickname" class="mt-17.25 flex-shrink-0" />
       <div class="flex flex-col">
         <img
           srcset="../assets/img/icon_chat_header_1x.png 1x, ../assets/img/icon_chat_header_2x.png 2x"
@@ -43,7 +54,11 @@ onMounted(() => {
           Waiting for request to be accepted...
         </div>
         <div class="mb-18 ml-12 flex gap-12">
-          <Button v-if="!expired && !info.error && !info.sent" class="w-44.5 text-8 leading-8" @click="info.type === 'outcome' ? emit('request') : emit('accept')">
+          <Button
+            v-if="!expired && !info.error && !info.sent"
+            class="w-44.5 text-8 leading-8"
+            @click="onChatButtonClick"
+          >
             <div class="flex items-center justify-center">
               <img class="h-6 w-6 object-contain" src="../assets/img/icon_heart_message.svg">
               <div class="ml-1.5">

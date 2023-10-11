@@ -17,7 +17,6 @@ export function isExitCommand(msg: ChatMessage): msg is ExitChatCommand {
 export interface RequestChatMessage {
   type: 'request'
   from: User
-  to: User
   id: number
 }
 

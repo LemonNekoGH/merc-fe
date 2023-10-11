@@ -1,10 +1,8 @@
-import type { User } from '~/api/types'
-
 // request in hall
 export interface RequestChatMessage {
   type: 'request'
-  from: User
-  to: User
+  from: string
+  to: string
 }
 
 // cancel request

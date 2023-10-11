@@ -38,7 +38,7 @@ export const useCable = defineStore('cable', () => {
   const sendToHall = (msg: string, user: User) => {
     hall!.send({ message: msg, from: user } as Common.HallMessage)
   }
-  const requestChatFromHall = (from: User, to: User) => {
+  const requestChatFromHall = (from: string, to: string) => {
     notification!.send({ type: 'request', from, to, timestamp: Date.now() } as Send.RequestChatMessage)
   }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useIntervalFn, useWindowSize } from '@vueuse/core'
+import { useEventListener, useIntervalFn, useWindowSize } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -8,7 +8,7 @@ import Bubble from '../components/bubble.vue'
 import { useUser } from '~/stores/user'
 import { useGlobalDialog } from '~/stores/global-dialogs'
 import { useCable } from '~/stores/cable'
-import type { HallMessage } from '~/types/chat/common'
+import type { Common } from '~/types/chat'
 import type { AcceptOrRejectChatMessage } from '~/types/chat/received'
 import ChatRequestDialog from '~/components/chat-request-dialog.vue'
 import type { ChatRequestDialogProps } from '~/types/ui'
@@ -24,9 +24,9 @@ const messageFromDoor = 'I prefer not to say. where are you at?where are you at?
 const messageFromDoorInBubble = ref('')
 const sendButton = ref<HTMLDivElement>()
 const showSentAnimation = ref(true)
-const allHallMessage = ref<HallMessage[]>([])
+const allHallMessage = ref<Common.HallMessage[]>([])
 const showingMessage = ref<{
-  msg: HallMessage
+  msg: Common.HallMessage
   top: number
   left: boolean
   id: number
@@ -50,6 +50,10 @@ const { pauseMessageAnimation, resumeMessageAnimation } = (() => {
     if (messageIndex >= allHallMessage.value.length)
       messageIndex = 0
 
+    console.log(messageIndex, allHallMessage.value.length)
+    if (showingMessage.value.find(it => it.msg.from.address === allHallMessage.value[messageIndex].from.address))
+      return
+
     const random = Math.random()
     const top = Math.floor(random * 22) + 20
     const left = Math.random() > 0.5
@@ -62,7 +66,7 @@ const { pauseMessageAnimation, resumeMessageAnimation } = (() => {
       like: false,
       pauseAnimation: false,
     })
-  }, 3000)
+  }, 5000)
 
   return { pauseMessageAnimation: pause, resumeMessageAnimation: resume }
 })()
@@ -107,11 +111,16 @@ watch([user], ([newUser]) => {
   cable.createHallChannel(hallMessageReceiver)
   // create notification channel
   cable.createNotificationChannel(newUser.address, onNotificationReceived)
-  // TODO: for test
-  allHallMessage.value.push({
-    message: 'Hello',
-    from: newUser,
-  })
+})
+
+// pause animation when tab not visible
+useEventListener(document, 'visibilitychange', (_) => {
+  if (document.visibilityState !== 'visible') {
+    pauseMessageAnimation()
+    return
+  }
+
+  resumeMessageAnimation()
 })
 
 function onNotificationReceived(msg: AcceptOrRejectChatMessage) {
@@ -130,15 +139,14 @@ function hallMessageReceiver(data: HallMessage | HallMessage[]) {
       return
     }
 
-    // TODO: set another message size
-    if (allHallMessage.value.length === 30)
+    while (allHallMessage.value.length > 30)
       allHallMessage.value.shift()
 
     allHallMessage.value.push(data)
     return
   }
 
-  allHallMessage.value = data
+  allHallMessage.value = data.filter(it => it.from.address !== user.value?.address)
 }
 
 function send() {
@@ -259,10 +267,10 @@ onMounted(() => {
     @mouseover="pauseMessageAnimation(); onMessageHoverOrOut(msg.id)"
     @mouseout="resumeMessageAnimation(); onMessageHoverOrOut(msg.id, true)" @bubble-clicked="onMessageHeartClick(msg.id)"
     @avatar-clicked="chatRequestDialogProps = {
-      avatar: msg.msg.from.avatar,
+      from: user!,
+      to: msg.msg.from,
       type: 'outcome',
       error: '',
-      name: msg.msg.from.nickname,
       message: msg.msg.message,
       sent: false,
     }; pauseMessageAnimation()" @animationend="onMessageAnimationEnd(msg.id)"
