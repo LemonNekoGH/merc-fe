@@ -6,7 +6,7 @@ import Dialog from './dialog.vue'
   <Dialog :hide-close-btn="true">
     <div class="w-40 flex p-2">
       <img src="../assets/img/icon_loading.svg" class="icon-loading mt-1.5 h-9">
-      <div class="ml-6 text-9 font-bold font-neue-bit text-white">
+      <div class="ml-6 text-9 font-bold font-neue-bit text-white selection:bg-white selection:text-black">
         Loading...
       </div>
     </div>

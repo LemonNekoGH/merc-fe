@@ -14,9 +14,15 @@ export function isExitCommand(msg: ChatMessage): msg is ExitChatCommand {
 }
 
 // request in hall
-export interface RequestChatMessage {
+interface RequestChatMessage {
   type: 'request'
   from: User
+  message: string
+  id: number
+}
+
+interface RequestIDMessage {
+  type: 'request_id'
   id: number
 }
 
@@ -29,11 +35,12 @@ interface AcceptChatMessage {
 // reject in hall
 interface RejectChatMessage {
   type: 'reject'
-  reason: 'pending' | 'other_side_chatting' | 'user_reject' | 'expired' | 'you_are_chatting' | 'canceled'
+  reason: 'Target has a pending request'
+  | 'Target is chatting with others'
+  | 'Your request has been rejected'
+  | 'This request was expired'
+  | 'You can\'t send request when you are chatting'
+  | 'This request was canceled'
 }
 
-export type AcceptOrRejectChatMessage = AcceptChatMessage | RejectChatMessage
-
-export function isAccept(msg: AcceptOrRejectChatMessage): msg is AcceptChatMessage {
-  return msg.type === 'accept'
-}
+export type NotificationMessage = AcceptChatMessage | RejectChatMessage | RequestChatMessage | RequestIDMessage

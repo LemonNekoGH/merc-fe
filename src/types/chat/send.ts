@@ -3,6 +3,7 @@ export interface RequestChatMessage {
   type: 'request'
   from: string
   to: string
+  message: string
 }
 
 // cancel request
@@ -21,6 +22,12 @@ export interface AcceptChatMessage {
 // reject chat
 export interface RejectChatMessage {
   type: 'reject'
+  request: number // message id
+}
+
+// cancel request
+export interface CancelChatMessage {
+  type: 'cancel'
   request: number // message id
 }
 

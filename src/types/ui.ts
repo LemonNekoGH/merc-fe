@@ -1,11 +1,10 @@
 import type { User } from '~/api/types'
 
 export interface ChatRequestDialogProps {
-  from: User
-  to: User
-  type: 'incoming' | 'outcome'
+  from?: User
+  to?: User
   message: string
   error: string
-  sent: boolean
   example?: boolean
+  id: number
 }

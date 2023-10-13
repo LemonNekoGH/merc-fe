@@ -23,7 +23,7 @@ const emit = defineEmits<{
     <div class="border-0.5rem border-b-#808080 border-l-#e6e6e6 border-r-#808080 border-t-#e6e6e6 bg-#ccc p-5 pt-0px">
       <!-- head -->
       <div class="h-13 flex items-end justify-end pb-12px">
-        <div class="h-full flex flex-1 items-start justify-center text-9 font-bold font-neue-bit text-black">
+        <div class="h-full flex flex-1 items-start justify-center text-9 font-bold font-neue-bit text-black selection:bg-white">
           {{ title }}
         </div>
         <div v-if="!hideCloseBtn" class="close-btn h-6 w-6 cursor-pointer" @click="emit('close')" />

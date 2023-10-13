@@ -41,7 +41,7 @@ async function loginByMetamask() {
     <div class="max-w-1200px w-full flex justify-end p-5">
       <div class="flex items-center b-2px b-[rgba(255,255,255,0.25)] px-4 py-2">
         <img srcset="../assets/img/icon_wallet_2_1x.png 1x, ../assets/img/icon_wallet_2_2x.png 2x" height="24">
-        <div class="ml-4 flex items-center pt-2 text-5 font-bold font-neue-bit text-white">
+        <div class="ml-4 flex items-center pt-2 text-5 font-bold font-neue-bit text-white selection:bg-white selection:text-black">
           {{ user.user.address }}
         </div>
       </div>
@@ -62,7 +62,7 @@ async function loginByMetamask() {
       <div class="mt-4 text-4 font-normal font-press-start text-white/50">
         Mercurius Club
       </div>
-      <div class="mt-40px text-14 font-700 font-fraunces text-white">
+      <div class="mt-40px text-14 font-700 font-fraunces text-white selection:bg-white selection:text-black">
         Chatting Brings You Luck
       </div>
       <template v-if="!user.user">
@@ -88,7 +88,7 @@ async function loginByMetamask() {
             <img srcset="../assets/img/icon_arrow_1x.png 1x, ../assets/img/icon_arrow_2x.png 2x">
           </div>
         </Button>
-        <div class="mt-6 w-490px text-6 font-bold leading-6 font-neue-bit text-white/50">
+        <div class="mt-6 w-490px text-6 font-bold leading-6 font-neue-bit text-white/50 selection:bg-white selection:text-black">
           By signing in, you agree to Mercurius Labs Studio's <span class="text-white">Terms of Use</span> and <span class="text-white">Privacy Policy</span>
         </div>
       </template>

@@ -8,9 +8,9 @@ export const useCable = defineStore('cable', () => {
   const consumer = createConsumer()
 
   let notification: (Subscription<Consumer> & Mixin & {
-    received: (data: Received.AcceptOrRejectChatMessage) => void
+    received: (data: Received.NotificationMessage) => void
   }) | null = null
-  const createNotificationChannel = (address: string, onReceived: (msg: Received.AcceptOrRejectChatMessage) => void) => {
+  const createNotificationChannel = (address: string, onReceived: (msg: Received.NotificationMessage) => void) => {
     notification = consumer.subscriptions.create({
       channel: 'NotificationChannel',
       address,
@@ -23,6 +23,9 @@ export const useCable = defineStore('cable', () => {
   }
   const rejectChatRequest = (request: number) => {
     notification!.send({ type: 'reject', request } as Send.RejectChatMessage)
+  }
+  const cancelChatRequest = (request: number) => {
+    notification!.send({ type: 'cancel', request } as Send.CancelChatMessage)
   }
 
   let hall: (Subscription<Consumer> & Mixin & {
@@ -38,8 +41,8 @@ export const useCable = defineStore('cable', () => {
   const sendToHall = (msg: string, user: User) => {
     hall!.send({ message: msg, from: user } as Common.HallMessage)
   }
-  const requestChatFromHall = (from: string, to: string) => {
-    notification!.send({ type: 'request', from, to, timestamp: Date.now() } as Send.RequestChatMessage)
+  const requestChatFromHall = (from: string, to: string, message: string) => {
+    notification!.send({ type: 'request', from, to, timestamp: Date.now(), message } as Send.RequestChatMessage)
   }
 
   let chat: (Subscription<Consumer> & Mixin & {
@@ -65,6 +68,7 @@ export const useCable = defineStore('cable', () => {
     sendToHall,
     createHallChannel,
     requestChatFromHall,
+    cancelChatRequest,
     enterChat,
     sendToChat,
     exitChat,

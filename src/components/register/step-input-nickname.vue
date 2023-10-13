@@ -27,7 +27,7 @@ async function submitNickname() {
   <Dialog :hide-close-btn="true">
     <div class="h-110 w-203 font-bold font-neue-bit">
       <div class="flex flex-col items-center justify-center">
-        <div class="text-16 text-white">
+        <div class="text-16 text-white selection:bg-white selection:text-black">
           Enter your nickname
         </div>
         <!-- Input -->

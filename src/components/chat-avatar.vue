@@ -9,7 +9,7 @@ defineProps<{
   <div class="bg h-75.5 w-68">
     <div :style="{ backgroundImage: `url(${avatar})` }" class="relative left-3.25 top-4 h-60.25 w-60.25 !bg-cover !bg-center !bg-no-repeat" />
     <div class="relative top-6 flex justify-center">
-      <div class="name min-w-24 px-5 text-center text-5 font-bold leading-6 font-neue-bit selection:bg-black selection:text-white">
+      <div class="name min-w-24 px-5 text-center text-5 font-bold leading-6 font-neue-bit selection:bg-white selection:text-black">
         {{ name }}
       </div>
     </div>

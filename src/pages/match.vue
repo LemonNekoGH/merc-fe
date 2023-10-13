@@ -8,8 +8,7 @@ import Bubble from '../components/bubble.vue'
 import { useUser } from '~/stores/user'
 import { useGlobalDialog } from '~/stores/global-dialogs'
 import { useCable } from '~/stores/cable'
-import type { Common } from '~/types/chat'
-import type { AcceptOrRejectChatMessage } from '~/types/chat/received'
+import type { Common, Received } from '~/types/chat'
 import ChatRequestDialog from '~/components/chat-request-dialog.vue'
 import type { ChatRequestDialogProps } from '~/types/ui'
 
@@ -36,7 +35,7 @@ const showingMessage = ref<{
 )
 const chatRequestDialogProps = ref<ChatRequestDialogProps>()
 
-const { pauseMessageAnimation, resumeMessageAnimation } = (() => {
+const { pauseMessageFlow, resumeMessageFlow } = (() => {
   let messageIndex = 0
 
   const { pause, resume } = useIntervalFn(() => {
@@ -50,7 +49,6 @@ const { pauseMessageAnimation, resumeMessageAnimation } = (() => {
     if (messageIndex >= allHallMessage.value.length)
       messageIndex = 0
 
-    console.log(messageIndex, allHallMessage.value.length)
     if (showingMessage.value.find(it => it.msg.from.address === allHallMessage.value[messageIndex].from.address))
       return
 
@@ -68,7 +66,7 @@ const { pauseMessageAnimation, resumeMessageAnimation } = (() => {
     })
   }, 5000)
 
-  return { pauseMessageAnimation: pause, resumeMessageAnimation: resume }
+  return { pauseMessageFlow: pause, resumeMessageFlow: resume }
 })()
 
 function onMessageHeartClick(id: number) {
@@ -116,22 +114,37 @@ watch([user], ([newUser]) => {
 // pause animation when tab not visible
 useEventListener(document, 'visibilitychange', (_) => {
   if (document.visibilityState !== 'visible') {
-    pauseMessageAnimation()
+    pauseMessageFlow()
     return
   }
 
-  resumeMessageAnimation()
+  resumeMessageFlow()
 })
 
-function onNotificationReceived(msg: AcceptOrRejectChatMessage) {
-  console.log(msg)
+function onNotificationReceived(msg: Received.NotificationMessage) {
+  switch (msg.type) {
+    case 'accept':
+      chatRequestDialogProps.value = undefined
+      // TODO: go chat page
+      break
+    case 'reject':
+      chatRequestDialogProps.value!.error = msg.reason
+      break
+    case 'request':
+      chatRequestDialogProps.value = {
+        from: msg.from,
+        message: msg.message,
+        error: '',
+        id: msg.id,
+      }
+      break
+    case 'request_id':
+      chatRequestDialogProps.value!.id = msg.id
+      break
+  }
 }
 
-function concatNotificationError() {
-
-}
-
-function hallMessageReceiver(data: HallMessage | HallMessage[]) {
+function hallMessageReceiver(data: Common.HallMessage | Common.HallMessage[]) {
   if (!Array.isArray(data)) {
     if (data.from.address === user.value?.address) {
       showSentAnimation.value = true
@@ -156,6 +169,12 @@ function send() {
 
 onMounted(() => {
   globalDialogs.showingLoadingDialog = true
+  if (!user.value)
+    return
+  // create hall message channel
+  cable.createHallChannel(hallMessageReceiver)
+  // create notification channel
+  cable.createNotificationChannel(user.value.address, onNotificationReceived)
 })
 </script>
 
@@ -224,7 +243,7 @@ onMounted(() => {
       >
         <input
           v-model="messageToHall"
-          class="h-full max-w-171 w-full border-0.25rem border-b-#ccc border-l-black border-r-#ccc border-t-black px-4 text-8 font-bold font-neue-bit outline-2px outline-black outline-solid focus:outline-2px focus:outline-black"
+          class="h-full max-w-171 w-full border-0.25rem border-b-#ccc border-l-black border-r-#ccc border-t-black px-4 text-8 font-bold font-neue-bit outline-2px outline-black outline-solid selection:bg-black selection:text-white focus:outline-2px focus:outline-black"
           placeholder="Your secret message"
         >
         <Button class="ml-5 text-8 leading-6" @click="send">
@@ -264,20 +283,18 @@ onMounted(() => {
     class="absolute" :style="{
       top: `${msg.top}rem`,
     }" :class="{ 'message-to-left transform-origin-right': msg.left, 'message-to-right transform-origin-left': !msg.left, '!animate-paused': msg.pauseAnimation }"
-    @mouseover="pauseMessageAnimation(); onMessageHoverOrOut(msg.id)"
-    @mouseout="resumeMessageAnimation(); onMessageHoverOrOut(msg.id, true)" @bubble-clicked="onMessageHeartClick(msg.id)"
+    @mouseover="pauseMessageFlow(); onMessageHoverOrOut(msg.id)"
+    @mouseout="resumeMessageFlow(); onMessageHoverOrOut(msg.id, true)" @bubble-clicked="onMessageHeartClick(msg.id)"
     @avatar-clicked="chatRequestDialogProps = {
-      from: user!,
       to: msg.msg.from,
-      type: 'outcome',
       error: '',
       message: msg.msg.message,
-      sent: false,
-    }; pauseMessageAnimation()" @animationend="onMessageAnimationEnd(msg.id)"
+      id: -1,
+    }; pauseMessageFlow()" @animationend="onMessageAnimationEnd(msg.id)"
   />
   <ChatRequestDialog
     v-if="chatRequestDialogProps" :info="chatRequestDialogProps"
-    @close="chatRequestDialogProps = undefined; resumeMessageAnimation()"
+    @close="chatRequestDialogProps = undefined; resumeMessageFlow()"
   />
 </template>
 

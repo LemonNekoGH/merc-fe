@@ -83,7 +83,7 @@ async function downloadSBT() {
       <!-- share -->
       <div class="mt-14 flex items-center justify-center gap-7">
         <div class="h-0.5 w-60 bg-[rgba(255,255,255,0.2)]" />
-        <div class="text-6.5 font-bold font-neue-bit text-white">
+        <div class="text-6.5 font-bold font-neue-bit text-white selection:bg-white selection:text-black">
           Share your SBT
         </div>
         <div class="h-0.5 w-60 bg-[rgba(255,255,255,0.2)]" />
@@ -116,13 +116,13 @@ async function downloadSBT() {
           </defs>
         </svg>
       </div>
-      <div class="mt-16 leading-10">
+      <div class="mt-16 leading-10 selection:bg-white selection:text-black">
         Dear Prayers,
       </div>
-      <div class="mt-12 leading-10">
+      <div class="mt-12 leading-10 selection:bg-white selection:text-black">
         I'm inviting you to the Matching Alter, assigning you with chat mates for real connections.
       </div>
-      <div class="mt-10 leading-10">
+      <div class="mt-10 leading-10 selection:bg-white selection:text-black">
         Have fun,<br> Mercurius
       </div>
       <div class="mt-36 flex justify-center">
