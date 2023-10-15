@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Button from '../components/button.vue'
-import Bubble from '../components/bubble.vue'
+import Bubble from '../components/bubble-in-hall.vue'
+import BubbleInChat from '../components/bubble-in-chat.vue'
 import exampleMessageAvatar from '../assets/img/place_holder_1x.png'
 import ChatRequestDialog from '../components/chat-request-dialog.vue'
 import ChatAvatar from '~/components/chat-avatar.vue'
 import type { ChatRequestDialogProps } from '~/types/ui'
 import { useGlobalDialog } from '~/stores/global-dialogs'
+import type { User } from '~/api/types'
 
 const globalDialogs = useGlobalDialog()
 
@@ -15,41 +17,40 @@ const like2 = ref(false)
 const like3 = ref(false)
 const like4 = ref(false)
 const chatRequestDialogProps = ref<ChatRequestDialogProps>()
-const requestDialog1: ChatRequestDialogProps = {
+const exampleUser: User = {
+  id: '',
+  address: '',
+  nickname: 'Example Name',
+  gender: '',
   avatar: exampleMessageAvatar,
-  name: 'Example Name',
-  type: 'outcome',
+}
+const requestDialog1: ChatRequestDialogProps = {
+  to: exampleUser,
   message: 'This is an outcome request dialog',
   error: '',
-  sent: false,
   example: true,
+  id: -1,
 }
 const requestDialog2: ChatRequestDialogProps = {
-  avatar: exampleMessageAvatar,
-  name: 'Example Name',
-  type: 'incoming',
+  from: exampleUser,
   message: 'This is an incoming request dialog',
   error: '',
-  sent: false,
   example: true,
+  id: 1,
 }
 const requestDialog3: ChatRequestDialogProps = {
-  avatar: exampleMessageAvatar,
-  name: 'Example Name',
-  type: 'outcome',
+  to: exampleUser,
   message: 'This is an outcome request dialog, but rejected',
-  error: 'Example Name rejected your request',
-  sent: true,
+  error: 'Your request has been rejected',
   example: true,
+  id: 1,
 }
 const requestDialog4: ChatRequestDialogProps = {
-  avatar: exampleMessageAvatar,
-  name: 'Example Name',
-  type: 'outcome',
+  to: exampleUser,
   message: 'This is an outcome request dialog, but waiting',
   error: '',
-  sent: true,
   example: true,
+  id: 1,
 }
 </script>
 
@@ -62,7 +63,7 @@ const requestDialog4: ChatRequestDialogProps = {
   </Button>
   <div class="mt-4 bg-black p-4">
     <Bubble
-      message="Click avatar to show outcome request dialog"
+      :message="{ message: 'Click avatar to show outcome request dialog', from: exampleUser }"
       :left-to-right="true"
       :image="exampleMessageAvatar"
       :like="like1"
@@ -72,7 +73,7 @@ const requestDialog4: ChatRequestDialogProps = {
   </div>
   <div class="bg-black p-4">
     <Bubble
-      message="This is a very very very very very very long message. Click avatar to show incoming request dialog"
+      :message="{ message: 'This is a very very very very very very long message. Click avatar to show incoming request dialog', from: exampleUser }"
       :left-to-right="true"
       :image="exampleMessageAvatar"
       :like="like2"
@@ -82,7 +83,7 @@ const requestDialog4: ChatRequestDialogProps = {
   </div>
   <div class="mt-4 flex justify-end bg-black p-4">
     <Bubble
-      message="Click avatar to show outcome rejected dialog"
+      :message="{ message: 'Click avatar to show outcome rejected dialog', from: exampleUser }"
       :left-to-right="false"
       :image="exampleMessageAvatar"
       :like="like3"
@@ -92,7 +93,7 @@ const requestDialog4: ChatRequestDialogProps = {
   </div>
   <div class="flex justify-end bg-black p-4">
     <Bubble
-      message="This is a very very very very very very long message. Click avatar to show waiting dialog"
+      :message="{ message: 'This is a very very very very very very long message. Click avatar to show waiting dialog', from: exampleUser }"
       :left-to-right="false"
       :image="exampleMessageAvatar"
       :like="like4"
@@ -102,4 +103,18 @@ const requestDialog4: ChatRequestDialogProps = {
   </div>
   <ChatAvatar class="mt-4" :avatar="exampleMessageAvatar" name="LemonNeko" />
   <ChatRequestDialog v-if="chatRequestDialogProps" :info="chatRequestDialogProps" @close="chatRequestDialogProps = undefined" />
+  <div class="mt-4 bg-#383838 p-4">
+    <BubbleInChat
+      message="That's great"
+      :left-to-right="true"
+      :avatar="exampleMessageAvatar"
+    />
+  </div>
+  <div class="flex justify-end bg-#383838 p-4">
+    <BubbleInChat
+      message="That's great"
+      :left-to-right="false"
+      :avatar="exampleMessageAvatar"
+    />
+  </div>
 </template>

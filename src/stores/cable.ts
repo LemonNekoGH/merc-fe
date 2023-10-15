@@ -48,16 +48,23 @@ export const useCable = defineStore('cable', () => {
   let chat: (Subscription<Consumer> & Mixin & {
     received: (data: Received.ChatMessage) => void
   }) | null = null
-  const enterChat = (id: number, receiver: (data: Received.ChatMessage) => void) => {
+  const enterChat = (
+    id: number,
+    user: string,
+    receiver: (data: Received.ChatMessage) => void,
+    rejectHandler: () => void,
+  ) => {
     chat = consumer.subscriptions.create({
       channel: 'ChatChannel',
       id,
+      user,
     }, {
       received: receiver,
+      rejected: rejectHandler,
     })
   }
   const sendToChat = (msg: string, userAddr: string) => {
-    chat!.send({ type: 'normal', message: msg, from: userAddr, timestamp: Date.now() } as Common.NormalChatMessage)
+    chat!.send({ type: 'normal', message: msg, from: userAddr, timestamp: Date.now() } as Send.NormalChatMessage)
   }
   const exitChat = (from: string) => chat!.send({ type: 'exit', from } as Send.ExitChatCommand)
 

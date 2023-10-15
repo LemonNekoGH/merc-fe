@@ -8,6 +8,7 @@ import { useUser } from '~/stores/user'
 import type { Common } from '~/types/chat'
 
 const props = defineProps<{
+  example?: boolean
   message: Common.HallMessage
   error: string
   id: number
@@ -36,7 +37,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Dialog :hide-close-btn="sent" @close="emit('close')">
+  <Dialog :hide-close-btn="sent && !example" @close="emit('close')">
     <div class="h-110 w-203 flex pl-4">
       <ChatAvatar :avatar="message.from.avatar" :name="message.from.nickname" class="mt-17.25 flex-shrink-0" />
       <div class="flex flex-col">
@@ -69,7 +70,7 @@ onMounted(() => {
               </div>
             </div>
           </Button>
-          <Button v-if="error || expired || sent" class="w-44.5 text-8 leading-8" @click="sent ? cable.cancelChatRequest(id) : '';emit('close')">
+          <Button v-if="error || expired || sent" class="w-44.5 text-8 leading-8" @click="sent && !error ? cable.cancelChatRequest(id) : '';emit('close')">
             <div class="flex items-center justify-center">
               <img class="h-6 w-6 object-contain" src="../../assets/img/icon_cancel.svg">
               <div class="ml-1.5">

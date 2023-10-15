@@ -13,6 +13,6 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <Receive v-if="info.from" :id="info.id" :message="{ message: info.message, from: info.from }" @close="emit('close')" />
-  <Request v-if="info.to" :id="info.id" :message="{ message: info.message, from: info.to }" :error="info.error" @close="emit('close')" />
+  <Receive v-if="info.from" :id="info.id" :message="{ message: info.message, from: info.from }" :example="info.example" @close="emit('close')" />
+  <Request v-if="info.to" :id="info.id" :message="{ message: info.message, from: info.to }" :error="info.error" :example="info.example" @close="emit('close')" />
 </template>

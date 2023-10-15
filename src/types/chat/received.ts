@@ -1,4 +1,3 @@
-import type { NormalChatMessage } from './common'
 import type { User } from '~/api/types'
 
 // other side exited
@@ -6,12 +5,24 @@ interface ExitChatCommand {
   type: 'exit'
 }
 
-// single chat
-export type ChatMessage = NormalChatMessage | ExitChatCommand
-
-export function isExitCommand(msg: ChatMessage): msg is ExitChatCommand {
-  return msg.type === 'exit'
+export interface NormalChatMessage {
+  type: 'normal'
+  message: string
+  from: string
+  lucky_point: number
 }
+
+export interface ChatInfo {
+  type: 'info'
+  messages: NormalChatMessage[]
+  end: boolean
+  end_by: string
+  from: User
+  to: User
+}
+
+// single chat
+export type ChatMessage = NormalChatMessage | ChatInfo | ExitChatCommand
 
 // request in hall
 interface RequestChatMessage {
@@ -38,9 +49,9 @@ interface RejectChatMessage {
   reason: 'Target has a pending request'
   | 'Target is chatting with others'
   | 'Your request has been rejected'
-  | 'This request was expired'
+  | 'This request has been expired'
   | 'You can\'t send request when you are chatting'
-  | 'This request was canceled'
+  | 'This request has been canceled'
 }
 
 export type NotificationMessage = AcceptChatMessage | RejectChatMessage | RequestChatMessage | RequestIDMessage

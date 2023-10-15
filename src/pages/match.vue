@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import Button from '../components/button.vue'
-import Bubble from '../components/bubble.vue'
+import Bubble from '../components/bubble-in-hall.vue'
 import { useUser } from '~/stores/user'
 import { useGlobalDialog } from '~/stores/global-dialogs'
 import { useCable } from '~/stores/cable'
@@ -125,7 +125,7 @@ function onNotificationReceived(msg: Received.NotificationMessage) {
   switch (msg.type) {
     case 'accept':
       chatRequestDialogProps.value = undefined
-      // TODO: go chat page
+      router.push(`/chat/${msg.id}`)
       break
     case 'reject':
       chatRequestDialogProps.value!.error = msg.reason

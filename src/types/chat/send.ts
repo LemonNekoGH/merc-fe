@@ -36,3 +36,9 @@ export interface ExitChatCommand {
   type: 'exit'
   from: string // address
 }
+
+export interface NormalChatMessage {
+  type: 'normal'
+  message: string
+  from: string // address
+}

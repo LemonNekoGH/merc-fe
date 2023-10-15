@@ -39,7 +39,10 @@ onMounted(async () => {
     :title="globalDialogs.alertParams.title" @close="globalDialogs.closeAlert"
   >
     <div class="text-9 font-bold font-neue-bit text-white">
-      {{ globalDialogs.alertParams.message }}
+      <div v-if="globalDialogs.alertParams.asHtml" v-html="globalDialogs.alertParams.message" />
+      <div v-else>
+        {{ globalDialogs.alertParams.message }}
+      </div>
     </div>
   </Dialog>
   <LoadingDialog v-if="globalDialogs.showingLoadingDialog" />

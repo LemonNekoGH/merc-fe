@@ -18,7 +18,7 @@ const emit = defineEmits<{
   <div class="flex">
     <div
       v-if="leftToRight" class="mr-2 h-11 w-11 cursor-pointer rounded-5px !bg-cover !bg-center !bg-no-repeat"
-      :style="{ backgroundImage: `url(${message.from.avatar})` }"
+      :style="{ backgroundImage: `url(${message.from.avatar})`, backgroundColor: 'black' }"
       @click="emit('avatarClicked')"
     />
     <div
@@ -38,7 +38,7 @@ const emit = defineEmits<{
     </div>
     <div
       v-if="!leftToRight" class="ml-2 h-11 w-11 rounded-5px !bg-cover !bg-center !bg-no-repeat"
-      :style="{ backgroundImage: `url(${message.from.avatar})` }"
+      :style="{ backgroundImage: `url(${message.from.avatar})`, backgroundColor: 'black' }"
       @click="emit('avatarClicked')"
     />
   </div>

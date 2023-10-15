@@ -8,6 +8,7 @@ import type { Common } from '~/types/chat'
 defineProps<{
   message: Common.HallMessage
   id: number
+  example?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -18,7 +19,7 @@ const cable = useCable()
 </script>
 
 <template>
-  <Dialog :hide-close-btn="true">
+  <Dialog :hide-close-btn="!example" @close="emit('close')">
     <div class="h-110 w-203 flex pl-4">
       <ChatAvatar v-if="message.from" :avatar="message.from.avatar" :name="message.from.nickname" class="mt-17.25 flex-shrink-0" />
       <div class="flex flex-col">
